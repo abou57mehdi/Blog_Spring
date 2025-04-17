@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title>Liste des articles - Blog</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+    <!-- Header conditionnel -->
+    <div th:if="${@thymeleafUtils.fragmentExists('fragments/header')}">
+        <div th:replace="fragments/header :: header"></div>
+    </div>
+    <div th:unless="${@thymeleafUtils.fragmentExists('fragments/header')}" class="container mt-4">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">Blog</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item" sec:authorize="!isAuthenticated()">
+                            <a class="nav-link" href="/login">Connexion</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="!isAuthenticated()">
+                            <a class="nav-link" href="/register">Inscription</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <a class="nav-link" href="/logout">Déconnexion</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Contenu de la page -->
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Tous les articles</h1>
+            <div sec:authorize="isAuthenticated()">
+                <a href="/posts/create" class="btn btn-primary">Créer un nouvel article</a>
+            </div>
+        </div>
+
+        <div th:if="${posts != null && !posts.empty}">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col" th:each="post : ${posts}">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="card-title" th:text="${post.title}">Titre de l'article</h2>
+                            <p class="card-text" th:text="${#strings.abbreviate(post.content, 150)}">Contenu de l'article...</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy')}">01/01/2023</span> par
+                                    <span th:text="${post.author != null ? post.author.username : 'Anonyme'}">Auteur</span>
+                                </small>
+                                <a th:href="@{/posts/{id}(id=${post.id})}" class="btn btn-sm btn-outline-primary">Lire la suite</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${posts == null || posts.empty}" class="alert alert-info">
+            Aucun article disponible pour le moment.
+        </div>
+    </div>
+
+    <!-- Footer conditionnel -->
+    <div th:if="${@thymeleafUtils.fragmentExists('fragments/footer')}">
+        <div th:replace="fragments/footer :: footer"></div>
+    </div>
+    <div th:unless="${@thymeleafUtils.fragmentExists('fragments/footer')}" class="container mt-4">
+        <footer class="py-3 my-4 border-top">
+            <p class="text-center text-muted">&copy; 2023 Blog</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+            <html xmlns:th="http://www.thymeleaf.org"
+                  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+            <head>
+                <meta charset="UTF-8">
+                <title>Connexion - Blog</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            </head>
+            <body>
+            <!-- Header conditionnel -->
+            <div th:if="${@thymeleafUtils.fragmentExists('fragments/header')}">
+                <div th:replace="fragments/header :: header"></div>
+            </div>
+            <div th:unless="${@thymeleafUtils.fragmentExists('fragments/header')}" class="container mt-4">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="/">Blog</a>
+                        <div class="collapse navbar-collapse">
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="/login">Connexion</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/register">Inscription</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Contenu de la page -->
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm">
+                            <div class="card-header">
+                                <h1 class="card-title">Connexion</h1>
+                            </div>
+                            <div class="card-body">
+                                <div th:if="${param.error}" class="alert alert-danger">
+                                    Nom d'utilisateur ou mot de passe incorrect.
+                                </div>
+                                <div th:if="${param.logout}" class="alert alert-success">
+                                    Vous avez été déconnecté.
+                                </div>
+                                <div th:if="${param.success}" class="alert alert-success">
+                                    Inscription réussie ! Vous pouvez maintenant vous connecter.
+                                </div>
+
+                                <form th:action="@{/login}" method="post">
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                                        <input type="text" id="username" name="username" class="form-control" required autofocus>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Mot de passe</label>
+                                        <input type="password" id="password" name="password" class="form-control" required>
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary">Se connecter</button>
+                                    </div>
+                                </form>
+
+                                <div class="text-center mt-3">
+                                    <p>Pas encore de compte ? <a href="/register">S'inscrire</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer conditionnel -->
+            <div th:if="${@thymeleafUtils.fragmentExists('fragments/footer')}">
+                <div th:replace="fragments/footer :: footer"></div>
+            </div>
+            <div th:unless="${@thymeleafUtils.fragmentExists('fragments/footer')}" class="container mt-4">
+                <footer class="py-3 my-4 border-top">
+                    <p class="text-center text-muted">&copy; 2023 Blog</p>
+                </footer>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            </body>
+            </html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+                        <html xmlns:th="http://www.thymeleaf.org"
+                              xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                        <head>
+                            <meta charset="UTF-8">
+                            <title th:text="${post.title} + ' - Blog'">Titre de l'article - Blog</title>
+                            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                        </head>
+                        <body>
+                        <!-- Header conditionnel -->
+                        <div th:if="${@thymeleafUtils.fragmentExists('fragments/header')}">
+                            <div th:replace="fragments/header :: header"></div>
+                        </div>
+                        <div th:unless="${@thymeleafUtils.fragmentExists('fragments/header')}" class="container mt-4">
+                            <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+                                <div class="container-fluid">
+                                    <a class="navbar-brand" href="/">Blog</a>
+                                    <div class="collapse navbar-collapse">
+                                        <ul class="navbar-nav ms-auto">
+                                            <li class="nav-item" sec:authorize="!isAuthenticated()">
+                                                <a class="nav-link" href="/login">Connexion</a>
+                                            </li>
+                                            <li class="nav-item" sec:authorize="!isAuthenticated()">
+                                                <a class="nav-link" href="/register">Inscription</a>
+                                            </li>
+                                            <li class="nav-item" sec:authorize="isAuthenticated()">
+                                                <a class="nav-link" href="/logout">Déconnexion</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+
+                        <!-- Contenu de la page -->
+                        <div class="container mt-4">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page" th:text="${post.title}">Titre de l'article</li>
+                                </ol>
+                            </nav>
+
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h1 class="card-title" th:text="${post.title}">Titre de l'article</h1>
+                                    <p class="text-muted">
+                                        <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2023 12:00</span> par
+                                        <span th:text="${post.author != null ? post.author.username : 'Anonyme'}">Auteur</span>
+                                    </p>
+
+                                    <div class="my-4" th:utext="${post.content}">
+                                        Contenu de l'article...
+                                    </div>
+
+                                    <!-- Actions sur le post -->
+                                    <div class="d-flex justify-content-between align-items-center mt-4">
+                                        <div class="d-flex align-items-center">
+                                            <form th:action="@{/posts/{id}/like(id=${post.id})}" method="post" class="me-3">
+                                                <button type="submit" class="btn btn-outline-primary">
+                                                    <span th:text="${post.likedBy != null ? post.likedBy.size() : '0'}">0</span> J'aime
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <div sec:authorize="isAuthenticated()" th:if="${post.author != null && #authentication.name == post.author.username}">
+                                            <a th:href="@{/posts/{id}/edit(id=${post.id})}" class="btn btn-outline-secondary me-2">Modifier</a>
+                                            <form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post" style="display: inline;">
+                                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">Supprimer</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section commentaires -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Commentaires</h3>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Formulaire de commentaire -->
+                                    <div sec:authorize="isAuthenticated()" class="mb-4">
+                                        <form th:action="@{/posts/{id}/comment(id=${post.id})}" method="post">
+                                            <div class="mb-3">
+                                                <textarea name="content" class="form-control" rows="3" placeholder="Ajouter un commentaire..." required></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Commenter</button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Liste des commentaires -->
+                                    <div th:if="${comments != null && !comments.empty}">
+                                        <div th:each="comment : ${comments}" class="mb-3 border-bottom pb-3">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <strong th:text="${comment.user.username}">Utilisateur</strong>
+                                                    <small class="text-muted" th:text="${#temporals.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2023 12:00</small>
+                                                </div>
+                                                <div sec:authorize="isAuthenticated()" th:if="${comment.user.username == #authentication.name}">
+                                                    <form th:action="@{/comments/{id}/delete(id=${comment.id})}" method="post" style="display: inline;">
+                                                        <button type="submit" class="btn btn-sm text-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')">Supprimer</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <p class="mt-2" th:text="${comment.content}">Contenu du commentaire</p>
+                                        </div>
+                                    </div>
+                                    <div th:if="${comments == null || comments.empty}" class="alert alert-light">
+                                        Aucun commentaire pour le moment. Soyez le premier à commenter !
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer conditionnel -->
+                        <div th:if="${@thymeleafUtils.fragmentExists('fragments/footer')}">
+                            <div th:replace="fragments/footer :: footer"></div>
+                        </div>
+                        <div th:unless="${@thymeleafUtils.fragmentExists('fragments/footer')}" class="container mt-4">
+                            <footer class="py-3 my-4 border-top">
+                                <p class="text-center text-muted">&copy; 2023 Blog</p>
+                            </footer>
+                        </div>
+
+                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                        </body>
+                        </html>

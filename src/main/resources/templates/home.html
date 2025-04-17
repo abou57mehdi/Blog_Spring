@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Accueil - Blog Spring Boot</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1 class="mb-4">Articles récents</h1>
+
+        <div th:if="${posts.empty}" class="alert alert-info">
+            Aucun article disponible pour le moment.
+        </div>
+
+        <div th:each="post : ${posts}" class="post-preview">
+            <h2><a th:href="@{/posts/{id}(id=${post.id})}" th:text="${post.title}">Titre de l'article</a></h2>
+            <p class="text-muted">
+                Par <span th:text="${post.author.username}">auteur</span>
+                le <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}">date</span>
+            </p>
+            <p th:text="${#strings.abbreviate(post.content, 300)}">Contenu de l'article...</p>
+            <div>
+                <a th:href="@{/posts/{id}(id=${post.id})}" class="btn btn-primary btn-sm">Lire l'article</a>
+                <span class="ms-2">
+                    <i class="bi bi-heart-fill"></i> <span th:text="${post.likedBy.size()}">0</span> J'aime
+                </span>
+                <span class="ms-2">
+                    <i class="bi bi-chat"></i> <span th:text="${post.comments.size()}">0</span> Commentaires
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
