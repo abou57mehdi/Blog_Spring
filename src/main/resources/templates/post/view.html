@@ -90,8 +90,8 @@
                                     </div>
 
                                     <!-- Liste des commentaires -->
-                                    <div th:if="${comments != null && !comments.empty}">
-                                        <div th:each="comment : ${comments}" class="mb-3 border-bottom pb-3">
+                                    <div th:if="${post.comments != null && !post.comments.empty}">
+                                        <div th:each="comment : ${post.comments}" class="mb-3 border-bottom pb-3">
                                             <div class="d-flex justify-content-between">
                                                 <div>
                                                     <strong th:text="${comment.user.username}">Utilisateur</strong>
@@ -106,8 +106,11 @@
                                             <p class="mt-2" th:text="${comment.content}">Contenu du commentaire</p>
                                         </div>
                                     </div>
-                                    <div th:if="${comments == null || comments.empty}" class="alert alert-light">
+                                    <div th:if="${post.comments == null || post.comments.empty}" class="alert alert-light">
                                         Aucun commentaire pour le moment. Soyez le premier à commenter !
+                                    </div>
+                                    <div th:if="${post.comments == null || post.comments.empty}" class="alert alert-light">
+                                    Aucun commentaire pour le moment. Soyez le premier à commenter !
                                     </div>
                                 </div>
                             </div>
