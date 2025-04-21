@@ -33,7 +33,7 @@ pipeline {
          stage('Deploy to Nexus') {
              steps {
                  configFileProvider([configFile(
-                     fileId: 'your-config-file-id',
+                     fileId: 'bee134d9-45fb-4afe-80f2-83712d8c1156',
                      variable: 'MAVEN_SETTINGS'
                  )]) {
                      bat """
@@ -43,6 +43,7 @@ pipeline {
                  }
              }
          }
+
 
 
         stage('Deploy to Docker') {
