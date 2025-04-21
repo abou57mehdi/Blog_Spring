@@ -28,23 +28,19 @@ pipeline {
             }
         }
 
-
-
-         stage('Deploy to Nexus') {
-             steps {
-                 configFileProvider([configFile(
-                     fileId: 'bee134d9-45fb-4afe-80f2-83712d8c1156',
-                     variable: 'MAVEN_SETTINGS'
-                 )]) {
-                     bat """
-                         mvn -s %MAVEN_SETTINGS% deploy \
-                         -DaltDeploymentRepository=nexus-snapshots::default::http://localhost:8081/repository/maven-snapshots/
-                     """
-                 }
-             }
-         }
-
-
+        stage('Deploy to Nexus') {
+            steps {
+                configFileProvider([configFile(
+                    fileId: 'bee134d9-45fb-4afe-80f2-83712d8c1156',
+                    variable: 'MAVEN_SETTINGS'
+                )]) {
+                    bat """
+                        mvn -s %MAVEN_SETTINGS% deploy \
+                        -DaltDeploymentRepository=nexus-snapshots::default::http://localhost:8081/repository/maven-snapshots/
+                    """
+                }
+            }
+        }
 
         stage('Deploy to Docker') {
             when {
