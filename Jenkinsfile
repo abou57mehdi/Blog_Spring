@@ -32,13 +32,14 @@ pipeline {
 
          stage('Deploy to Nexus') {
              steps {
-                 withCredentials([usernamePassword(
-                     credentialsId: 'nexus-creds',
-                     usernameVariable: 'NEXUS_USERNAME',
-                     passwordVariable: 'NEXUS_PASSWORD'
+                 configFileProvider([configFile(
+                     fileId: 'your-config-file-id',
+                     variable: 'MAVEN_SETTINGS'
                  )]) {
-                     // Maven will use your existing settings.xml in .m2
-                     bat "set NEXUS_USERNAME=admin && set NEXUS_PASSWORD=admin && mvn clean deploy -DskipTests"
+                     bat """
+                         mvn -s %MAVEN_SETTINGS% deploy \
+                         -DaltDeploymentRepository=nexus-snapshots::default::http://localhost:8081/repository/maven-snapshots/
+                     """
                  }
              }
          }
