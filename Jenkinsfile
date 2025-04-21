@@ -28,6 +28,15 @@ pipeline {
             }
         }
 
+        stage('Test Nexus Connection') {
+            steps {
+                bat '''
+                    curl -u admin:admin -X GET http://localhost:8081/service/rest/v1/status
+                    echo %ERRORLEVEL%
+                '''
+            }
+        }
+
         stage('Deploy to Nexus') {
             steps {
                 bat """
