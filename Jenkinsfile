@@ -7,12 +7,10 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
-            steps {
-                echo "Build started"
-                sh 'mvn clean install'
-            }
-        }
+        steps {
+                        echo "Build started"
+                        bat 'mvn clean install'  // Use bat for Windows systems
+                    }
 
         stage('Test') {
             steps {
