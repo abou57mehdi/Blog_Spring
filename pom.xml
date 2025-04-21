@@ -103,7 +103,7 @@
 		</snapshotRepository>
 		<repository>
 			<id>nexus-releases</id>
-			<url>http://localhost:8081/repository/maven-releases/</url>
+			<url>http://localhost:8081/repository/maven-snapshots/</url>
 		</repository>
 	</distributionManagement>
 	</project>
