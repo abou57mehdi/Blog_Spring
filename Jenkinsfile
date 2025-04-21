@@ -28,34 +28,20 @@ pipeline {
             }
         }
 
-        stage('Test Nexus Connection') {
-            steps {
-                bat '''
-                    curl -u admin:admin -X GET http://localhost:8081/service/rest/v1/status
-                    echo %ERRORLEVEL%
-                '''
-            }
-        }
 
-        stage('Deploy to Nexus') {
-            steps {
-                bat """
-                    echo ^<settings^> > settings.xml
-                    echo   ^<servers^> >> settings.xml
-                    echo     ^<server^> >> settings.xml
-                    echo       ^<id^>nexus-snapshots^</id^> >> settings.xml
-                    echo       ^<username^>admin^</username^> >> settings.xml
-                    echo       ^<password^>admin^</password^> >> settings.xml
-                    echo     ^</server^> >> settings.xml
-                    echo   ^</servers^> >> settings.xml
-                    echo ^</settings^> >> settings.xml
 
-                    mvn deploy -s settings.xml -DaltDeploymentRepository=nexus-snapshots::default::http://localhost:8081/repository/maven-snapshots/
-
-                    del settings.xml
-                """
-            }
-        }
+         stage('Deploy to Nexus') {
+             steps {
+                 withCredentials([usernamePassword(
+                     credentialsId: 'nexus-creds',
+                     usernameVariable: 'NEXUS_USERNAME',
+                     passwordVariable: 'NEXUS_PASSWORD'
+                 )]) {
+                     // Maven will use your existing settings.xml in .m2
+                     bat "set NEXUS_USERNAME=admin && set NEXUS_PASSWORD=admin && mvn clean deploy -DskipTests"
+                 }
+             }
+         }
 
 
         stage('Deploy to Docker') {
