@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3.8.5'   // Make sure this name matches your Jenkins config
-        jdk 'Java 17'         // Same here
+        maven 'Maven 3.8.5'
+        jdk 'Java 17'
     }
 
     stages {
@@ -32,15 +32,15 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'nexus-creds',
-                    usernameVariable: 'admin',
-                    passwordVariable: 'admin'
+                    usernameVariable: 'NEXUS_USERNAME',  // Changed to NEXUS_USERNAME
+                    passwordVariable: 'NEXUS_PASSWORD'   // Changed to NEXUS_PASSWORD
                 )]) {
                     bat """
                         mvn deploy \
                         -DaltDeploymentRepository=nexus-snapshots::default::http://localhost:8081/repository/maven-snapshots/ \
                         -DrepositoryId=nexus-snapshots \
-                        -Dserver.username=${NEXUS_USER} \
-                        -Dserver.password=${NEXUS_PASS}
+                        -Dserver.username=${NEXUS_USERNAME} \
+                        -Dserver.password=${NEXUS_PASSWORD}
                     """
                 }
             }
