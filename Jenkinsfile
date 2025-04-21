@@ -30,8 +30,19 @@ pipeline {
 
         stage('Deploy to Nexus') {
             steps {
-                echo "Uploading to Nexus"
-                bat 'mvn deploy'
+                withCredentials([usernamePassword(
+                    credentialsId: 'nexus-creds',
+                    usernameVariable: 'admin',
+                    passwordVariable: 'admin'
+                )]) {
+                    bat """
+                        mvn deploy \
+                        -DaltDeploymentRepository=nexus-snapshots::default::http://localhost:8081/repository/maven-snapshots/ \
+                        -DrepositoryId=nexus-snapshots \
+                        -Dserver.username=${NEXUS_USER} \
+                        -Dserver.password=${NEXUS_PASS}
+                    """
+                }
             }
         }
 
