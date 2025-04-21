@@ -32,19 +32,16 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'nexus-creds',
-                    usernameVariable: 'NEXUS_USERNAME',  // Changed to NEXUS_USERNAME
-                    passwordVariable: 'NEXUS_PASSWORD'   // Changed to NEXUS_PASSWORD
+                    usernameVariable: 'NEXUS_USERNAME',
+                    passwordVariable: 'NEXUS_PASSWORD'
                 )]) {
                     bat """
-                        mvn deploy \
-                        -DaltDeploymentRepository=nexus-snapshots::default::http://localhost:8081/repository/maven-snapshots/ \
-                        -DrepositoryId=nexus-snapshots \
-                        -Dserver.username=${NEXUS_USERNAME} \
-                        -Dserver.password=${NEXUS_PASSWORD}
+                        mvn deploy -s .m2/settings.xml
                     """
                 }
             }
         }
+
 
         stage('Deploy to Docker') {
             when {
