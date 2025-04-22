@@ -44,7 +44,7 @@ pipeline {
 
         stage('Deploy to Docker') {
             when {
-                branch 'CI/CD'
+                branch 'master'
             }
             steps {
                 echo "Docker build and push"
