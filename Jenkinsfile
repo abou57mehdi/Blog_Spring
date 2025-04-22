@@ -50,7 +50,14 @@ pipeline {
                     }
                     post {
                         always {
-                            recordIssues(tools: [checkStyle(pattern: '**/target/checkstyle-result.xml')])
+                            publishHTML(target: [
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: true,
+                                keepAll: true,
+                                reportDir: 'target/site',
+                                reportFiles: 'checkstyle.html',
+                                reportName: 'Checkstyle Report'
+                            ])
                         }
                     }
                 }
@@ -62,7 +69,14 @@ pipeline {
                     }
                     post {
                         always {
-                            recordIssues(tools: [spotBugs(pattern: '**/target/spotbugsXml.xml')])
+                            publishHTML(target: [
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: true,
+                                keepAll: true,
+                                reportDir: 'target/site',
+                                reportFiles: 'spotbugs.html',
+                                reportName: 'SpotBugs Report'
+                            ])
                         }
                     }
                 }
@@ -74,7 +88,14 @@ pipeline {
                     }
                     post {
                         always {
-                            recordIssues(tools: [pmdParser(pattern: '**/target/pmd.xml')])
+                            publishHTML(target: [
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: true,
+                                keepAll: true,
+                                reportDir: 'target/site',
+                                reportFiles: 'pmd.html',
+                                reportName: 'PMD Report'
+                            ])
                         }
                     }
                 }
