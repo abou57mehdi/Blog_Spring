@@ -250,9 +250,26 @@ pipeline {
             echo "Pipeline completed successfully!"
         }
         failure {
-            mail to: 'aboumehdi57@gmail.com',
-                 subject: "Échec du build #${env.BUILD_NUMBER}",
-                 body: "Le build a échoué. Vérifiez Jenkins : ${env.BUILD_URL}"
+            emailext (
+                to: 'aboumehdi57@gmail.com',
+                subject: "ÉCHEC: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: """<p>ÉCHEC: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'</p>
+                <p>Consultez les logs: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a></p>
+                <p>Les étapes qui ont échoué:</p>
+                ${currentBuild.rawBuild.getLog(100)}""",
+                attachLog: true,
+                compressLog: true,
+                mimeType: 'text/html'
+            )
+        }
+        unstable {
+            emailext (
+                to: 'aboumehdi57@gmail.com',
+                subject: "INSTABLE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: """<p>INSTABLE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'</p>
+                <p>Consultez les logs: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a></p>""",
+                mimeType: 'text/html'
+            )
         }
         always {
             echo "Pipeline execution completed."
