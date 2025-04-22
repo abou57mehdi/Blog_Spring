@@ -44,15 +44,24 @@ pipeline {
 
         stage('Deploy to Docker') {
             when {
-                branch 'main'
+                branch 'CI/CD'
             }
             steps {
                 echo "Docker build and push"
-                bat 'docker build -t my-app .'
-                bat 'docker tag my-app my-dockerhub-username/my-app:latest'
-                bat 'docker push my-dockerhub-username/my-app:latest'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USERNAME',
+                    passwordVariable: 'DOCKER_PASSWORD'
+                )]) {
+                    bat """
+                        docker login -u "%DOCKER_USERNAME%" -p "%DOCKER_PASSWORD%"
+                        docker build -t aboum22/my-app .
+                        docker push aboum22/my-app:latest
+                    """
+                }
             }
         }
+
     }
 
     post {
