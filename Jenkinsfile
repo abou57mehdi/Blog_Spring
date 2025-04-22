@@ -162,7 +162,11 @@ pipeline {
                     
                     // Clean up old images to free up space
                     try {
-                        bat 'docker images "aboum22/blog-spring" -q | findstr . && docker rmi $(docker images "aboum22/blog-spring" -q) || echo "No images to clean"'
+                        bat '''
+                            FOR /F "tokens=*" %%i IN ('docker images "aboum22/blog-spring" -q') DO (
+                                docker rmi %%i
+                            )
+                        '''
                         echo "✅ Cleaned up old Docker images"
                     } catch (Exception e) {
                         echo "⚠️ Old image cleanup failed but continuing: ${e.message}"
