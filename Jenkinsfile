@@ -6,6 +6,10 @@ pipeline {
         jdk 'Java 17'
     }
 
+    triggers {
+        githubPush()
+    }
+
     stages {
         stage('SCM Checkout') {
             steps {
