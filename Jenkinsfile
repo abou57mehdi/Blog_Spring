@@ -38,11 +38,44 @@ pipeline {
                         }
                     }
                 }
-                
-                stage('Code Analysis') {
+            }
+        }
+
+        stage('Analyse du code') {
+            parallel {
+                stage('Checkstyle') {
                     steps {
-                        echo "Running code analysis"
-                        bat 'mvn checkstyle:checkstyle pmd:pmd'
+                        echo "Running Checkstyle analysis"
+                        bat 'mvn checkstyle:checkstyle'
+                    }
+                    post {
+                        always {
+                            recordIssues(tools: [checkStyle(pattern: '**/target/checkstyle-result.xml')])
+                        }
+                    }
+                }
+                
+                stage('FindBugs') {
+                    steps {
+                        echo "Running SpotBugs analysis (FindBugs successor)"
+                        bat 'mvn spotbugs:spotbugs'
+                    }
+                    post {
+                        always {
+                            recordIssues(tools: [spotBugs(pattern: '**/target/spotbugsXml.xml')])
+                        }
+                    }
+                }
+                
+                stage('PMD') {
+                    steps {
+                        echo "Running PMD analysis"
+                        bat 'mvn pmd:pmd'
+                    }
+                    post {
+                        always {
+                            recordIssues(tools: [pmdParser(pattern: '**/target/pmd.xml')])
+                        }
                     }
                 }
             }
