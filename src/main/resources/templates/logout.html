@@ -55,7 +55,6 @@
 <!-- Footer conditionnel -->
 <div th:if="${@thymeleafUtils.fragmentExists('fragments/footer')}">
     <div th:replace="fragments/footer :: footer"></div>
-</div>
 <div th:unless="${@thymeleafUtils.fragmentExists('fragments/footer')}" class="container mt-4">
     <footer class="py-3 my-4 border-top">
         <p class="text-center text-muted">&copy; 2023 Blog</p>
