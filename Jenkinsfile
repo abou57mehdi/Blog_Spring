@@ -180,7 +180,7 @@ pipeline {
                     bat 'wmic logicaldisk get deviceid,freespace,size'
                     
                     // Ensure target directory for artifacts exists
-                    bat 'mkdir -p target\\docker-image'
+                    bat 'if not exist target\\docker-image mkdir target\\docker-image'
                 }
             }
         }
@@ -222,7 +222,7 @@ pipeline {
                     // Even if pushing to Docker Hub fails, save the image locally
                     try {
                         bat '''
-                            mkdir -p target/docker-image
+                            if not exist target\\docker-image mkdir target\\docker-image
                             docker save aboum22/blog-spring:latest -o target/docker-image/blog-spring.tar
                         '''
                         archiveArtifacts artifacts: 'target/docker-image/*.tar', fingerprint: true
