@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Post</title>
+</head>
+<body>
+    <h1 th:text="${post.title}">Post Title</h1>
+    <p th:text="${post.content}">Post content goes here...</p>
+    
+    <h2>Comments</h2>
+    <div th:if="${post.comments}">
+        <div th:each="comment : ${post.comments}">
+            <p th:text="${comment.content}">Comment content</p>
+        </div>
+    </div>
+    
+    <form th:action="@{/comments/add}" th:object="${comment}" method="post">
+        <input type="hidden" name="postId" th:value="${post.id}" />
+        <div>
+            <label for="content">Add Comment</label>
+            <textarea th:field="*{content}" id="content"></textarea>
+        </div>
+        <button type="submit">Add Comment</button>
+    </form>
+</body>
+</html> 

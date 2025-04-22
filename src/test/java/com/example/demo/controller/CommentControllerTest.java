@@ -6,20 +6,25 @@ import com.example.demo.model.User;
 import com.example.demo.service.CommentService;
 import com.example.demo.service.PostService;
 import com.example.demo.service.UserService;
+import com.example.demo.config.ThymeleafUtils;
+import com.example.demo.config.MockTemplateConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CommentController.class)
+@Import(MockTemplateConfig.class)
 class CommentControllerTest {
 
     @Autowired
@@ -33,6 +38,9 @@ class CommentControllerTest {
 
     @MockBean
     private UserService userService;
+    
+    @MockBean
+    private ThymeleafUtils thymeleafUtils;
 
     private Comment testComment;
     private Post testPost;
@@ -53,6 +61,9 @@ class CommentControllerTest {
         testComment.setContent("Test Comment");
         testComment.setUser(testUser);
         testComment.setPost(testPost);
+        
+        // Mock ThymeleafUtils behavior
+        when(thymeleafUtils.fragmentExists(anyString())).thenReturn(false);
     }
 
     @Test

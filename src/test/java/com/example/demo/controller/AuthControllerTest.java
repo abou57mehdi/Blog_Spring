@@ -2,16 +2,20 @@ package com.example.demo.controller;
 
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
+import com.example.demo.config.ThymeleafUtils;
+import com.example.demo.config.MockTemplateConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(AuthController.class)
 @AutoConfigureMockMvc(addFilters = false)  // Désactive les filtres de sécurité
+@Import(MockTemplateConfig.class)
 class AuthControllerTest {
 
     @Autowired
@@ -27,6 +32,9 @@ class AuthControllerTest {
 
     @MockBean
     private UserService userService;
+    
+    @MockBean
+    private ThymeleafUtils thymeleafUtils;
 
     private User testUser;
 
@@ -37,6 +45,9 @@ class AuthControllerTest {
         testUser.setUsername("testuser");
         testUser.setEmail("test@example.com");
         testUser.setPassword("password");
+        
+        // Mock ThymeleafUtils behavior
+        when(thymeleafUtils.fragmentExists(anyString())).thenReturn(false);
     }
 
     @Test
