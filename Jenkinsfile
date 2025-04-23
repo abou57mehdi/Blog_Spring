@@ -248,6 +248,14 @@ pipeline {
     post {
         success {
             echo "Pipeline completed successfully!"
+            emailext (
+                to: 'aboumehdi57@gmail.com',
+                subject: "SUCCÈS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: """<p>SUCCÈS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'</p>
+                <p>Le pipeline s'est terminé avec succès!</p>
+                <p>Consultez les détails: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a></p>""",
+                mimeType: 'text/html'
+            )
         }
         failure {
             emailext (
