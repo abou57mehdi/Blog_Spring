@@ -1,0 +1,232 @@
+\chapter{Quatrième Livrable : Codage}
+% Adjust paragraph spacing within the chapter
+\setlength{\parskip}{0.5em}
+% Adjust spacing after section and subsection headings
+\setsecheadstyle{\Large\color{accentblue}\sffamily\bfseries\raggedright}
+\setsubsecheadstyle{\large\color{accentblue}\sffamily\bfseries\raggedright}
+\setlength{\aftersecskip}{1em}
+\setlength{\aftersubsecskip}{0.5em}
+
+\section{Création et Configuration d'un Dépôt GitHub}
+\subsection{Présentation}
+Un dépôt GitHub privé a été créé à l'adresse \url{https://github.com/abou57mehdi/Blog_Spring}. Les collaborateurs incluent abou57mehdi (propriétaire), Abdelah et mehdi (collaborateurs). Le dépôt a été initialisé avec un fichier README décrivant le projet, un fichier \texttt{.gitignore} adapté aux projets Spring Boot (ignorant \texttt{target/}, \texttt{.idea/}, etc.), et une licence MIT. Les permissions ont été configurées pour permettre des contributions directes par les membres de l'équipe, avec des notifications activées pour les commits et les pull requests.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+  \begin{tcolorbox}[enhanced, colback=lightgray, colframe=accentblue, arc=5pt, boxrule=0.5pt, drop shadow]
+    \centering
+    \includegraphics[width=0.6\textwidth]{github_repo.png}
+    \captionof{figure}{Page principale du dépôt GitHub}
+    \label{fig:github-repo}
+    \vspace{0.5cm}
+    \parbox{0.9\textwidth}{\centering La page principale montre le README, la licence, et les collaborateurs du projet Blog\_Spring.}
+  \end{tcolorbox}
+\end{minipage}
+\end{center}
+
+\section{Utilisation de Git comme Gestionnaire de Versions}
+\subsection{Présentation}
+Cette tâche consistait à utiliser un système de gestion de versions pour suivre les modifications du code source et faciliter la collaboration entre les membres de l'équipe. Git a été choisi pour sa flexibilité et sa compatibilité avec GitHub.
+
+\subsection{Détails}
+Git a été utilisé comme gestionnaire de versions pour le projet Blog\_Spring. Les membres de l'équipe ont cloné le dépôt localement avec la commande \texttt{git clone https://github.com/abou57mehdi/Blog\_Spring.git}. Les modifications ont été suivies à l'aide de commandes telles que \texttt{git add}, \texttt{git commit}, et \texttt{git push}. 
+
+L'historique des commits montre une évolution progressive du projet, avec une attention particulière portée à la mise en place d'un pipeline d'intégration continue avec Jenkins. Les commits récents incluent des modifications importantes comme \texttt{"new Jenkinsfile"} (commit \texttt{098000f}), \texttt{"setting up proper test env-solving template error resolution"} (commit \texttt{6e6bebc}), et des améliorations continues du pipeline comme \texttt{"email success message"} (commit \texttt{f6f42fd}).
+
+\begin{center}
+\begin{minipage}{\textwidth}
+  \begin{tcolorbox}[enhanced, colback=lightgray, colframe=accentblue, arc=5pt, boxrule=0.5pt, drop shadow]
+    \centering
+    \includegraphics[width=0.8\textwidth]{git_commits.png}
+    \captionof{figure}{Historique des commits}
+    \label{fig:git-commits}
+    \vspace{0.5cm}
+    \parbox{0.9\textwidth}{\centering L'historique montre les commits sur la branche \texttt{master} avec une concentration sur le développement du pipeline CI/CD.}
+  \end{tcolorbox}
+\end{minipage}
+\end{center}
+
+\section{Adoption d'une Stratégie de Branches}
+\subsection{Présentation}
+L'adoption d'une stratégie de branches permet d'organiser le développement, de séparer les nouvelles fonctionnalités des corrections, et de maintenir un flux de travail clair. Notre projet a implémenté une stratégie de branches adaptée au développement collaboratif et à l'intégration continue.
+
+\subsection{Détails}
+Le projet utilise plusieurs branches pour organiser le développement et l'intégration continue:
+
+\begin{itemize}
+  \item \textbf{master}: La branche principale contenant le code de production stable
+  \item \textbf{CI/CD}: Une branche dédiée au développement et à la configuration du pipeline d'intégration continue
+  \item \textbf{abdelah}: Branche utilisée par le collaborateur Abdelah pour le développement de fonctionnalités
+  \item \textbf{mehdi}: Branche utilisée par le collaborateur mehdi pour le développement de fonctionnalités
+\end{itemize}
+
+Cette structure de branches a permis une séparation claire des responsabilités: les développements spécifiques sont réalisés sur les branches individuelles (\texttt{abdelah} et \texttt{mehdi}), la configuration de l'intégration continue est gérée sur la branche \texttt{CI/CD}, et seul le code validé est fusionné vers \texttt{master}.
+
+Une amélioration future consisterait à adopter une stratégie Git Flow plus formalisée avec des branches \texttt{develop}, \texttt{feature/*}, \texttt{release/*} et \texttt{hotfix/*} pour mieux structurer les différentes phases du développement.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+  \begin{tcolorbox}[enhanced, colback=lightgray, colframe=accentblue, arc=5pt, boxrule=0.5pt, drop shadow]
+    \centering
+    \includegraphics[width=0.8\textwidth]{git_branches.png}
+    \captionof{figure}{Structure des branches du projet}
+    \label{fig:git-branches}
+    \vspace{0.5cm}
+    \parbox{0.9\textwidth}{\centering Le diagramme montre l'organisation des branches \texttt{master}, \texttt{CI/CD}, \texttt{abdelah} et \texttt{mehdi}.}
+  \end{tcolorbox}
+\end{minipage}
+\end{center}
+
+\section{Gestion des Conflits et Bonnes Pratiques Git}
+\subsection{Présentation}
+La gestion des conflits et l'adoption de bonnes pratiques Git sont essentielles pour maintenir un workflow fluide et éviter les erreurs lors des collaborations. Cette tâche inclut l'utilisation de commandes comme \texttt{push}, \texttt{pull}, \texttt{merge}, et la résolution de conflits.
+
+\subsection{Détails}
+Un exemple de conflit a été identifié dans le fichier \texttt{src/main/resources/templates/post/view.html}, où un message d'alerte pour l'absence de commentaires était dupliqué:
+
+\begin{verbatim}
+<div th:if="${post.comments == null || post.comments.empty}" class="alert alert-light">
+    Aucun commentaire pour le moment. Soyez le premier à commenter !
+</div>
+<div th:if="${post.comments == null || post.comments.empty}" class="alert alert-light">
+    Aucun commentaire pour le moment. Soyez le premier à commenter !
+</div>
+\end{verbatim}
+
+La résolution a consisté à supprimer la duplication:
+
+\begin{verbatim}
+<div th:if="${post.comments == null || post.comments.empty}" class="alert alert-light">
+    Aucun commentaire pour le moment. Soyez le premier à commenter !
+</div>
+\end{verbatim}
+
+Ce conflit typique est survenu lorsque plusieurs développeurs ont modifié simultanément le même fichier lors de l'implémentation de la fonctionnalité de commentaires.
+
+Des conflits similaires ont été résolus dans d'autres parties du code, notamment lors de la configuration du pipeline Jenkins et de l'intégration des fonctionnalités de sécurité.
+
+Les bonnes pratiques adoptées incluent:
+\begin{itemize}
+  \item Commits atomiques avec messages descriptifs suivant la convention \texttt{type: description}
+  \item Synchronisation régulière avec le dépôt distant via \texttt{git pull} avant de commencer de nouveaux développements
+  \item Communication entre les membres de l'équipe pour coordonner les modifications sur les fichiers critiques
+  \item Utilisation de branches dédiées pour les développements indépendants
+\end{itemize}
+
+\begin{center}
+\begin{minipage}{\textwidth}
+  \begin{tcolorbox}[enhanced, colback=lightgray, colframe=accentblue, arc=5pt, boxrule=0.5pt, drop shadow]
+    \centering
+    \includegraphics[width=0.8\textwidth]{conflict_resolution.png}
+    \captionof{figure}{Résolution d'un conflit Git}
+    \label{fig:conflict-resolution}
+    \vspace{0.5cm}
+    \parbox{0.9\textwidth}{\centering Interface montrant la résolution d'un conflit dans le fichier view.html.}
+  \end{tcolorbox}
+\end{minipage}
+\end{center}
+
+\section{Maintien de Plusieurs Environnements}
+\subsection{Présentation}
+Le maintien de plusieurs environnements (développement, test, production) permet de tester et déployer le projet de manière structurée, en évitant les erreurs en production. Cette tâche vise à configurer des environnements distincts avec des paramètres adaptés.
+
+\subsection{Détails}
+Le projet utilise actuellement un environnement de développement configuré dans le fichier \texttt{application.properties}:
+
+\begin{verbatim}
+# Configuration de base
+spring.application.name=blog
+server.port=8080
+
+# Configuration H2
+spring.datasource.url=jdbc:h2:file:./blogdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+
+# Configuration JPA
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+# Configuration Thymeleaf
+spring.thymeleaf.cache=false
+\end{verbatim}
+
+Cette configuration utilise une base de données H2 en mode fichier pour la persistance des données, avec la console H2 activée pour faciliter le développement et le débogage.
+
+Le déploiement est facilité par une configuration Docker, définie dans le fichier \texttt{Dockerfile}:
+
+\begin{verbatim}
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:17-jdk-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the JAR file into the container
+COPY target/*.jar app.jar
+
+# Expose the port that the app runs on
+EXPOSE 8080
+
+# Define the command to run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
+\end{verbatim}
+
+Cette configuration Docker permet de déployer l'application dans différents environnements de manière cohérente et isolée.
+
+Le pipeline d'intégration continue configuré dans Jenkins inclut également des étapes de déploiement vers un dépôt Nexus et vers Docker Hub, facilitant ainsi la transition entre les environnements.
+
+À terme, nous prévoyons de mettre en place des profils Spring Boot distincts (\texttt{dev}, \texttt{test}, \texttt{prod}) avec des configurations adaptées à chaque environnement, notamment pour la base de données et les paramètres de sécurité.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+  \begin{tcolorbox}[enhanced, colback=lightgray, colframe=accentblue, arc=5pt, boxrule=0.5pt, drop shadow]
+    \centering
+    \includegraphics[width=0.8\textwidth]{environments.png}
+    \captionof{figure}{Configuration des environnements}
+    \label{fig:environments}
+    \vspace{0.5cm}
+    \parbox{0.9\textwidth}{\centering Illustration du flux de déploiement à travers les différents environnements.}
+  \end{tcolorbox}
+\end{minipage}
+\end{center}
+
+\section{Pipeline d'Intégration Continue}
+\subsection{Présentation}
+Un point fort du projet est l'implémentation d'un pipeline d'intégration continue complet avec Jenkins, permettant d'automatiser les tests, l'analyse de code, et le déploiement.
+
+\subsection{Détails}
+Le pipeline est défini dans un fichier \texttt{Jenkinsfile} à la racine du projet et comprend les étapes suivantes:
+
+\begin{enumerate}
+  \item \textbf{SCM Checkout}: Récupération du code source depuis GitHub
+  \item \textbf{Build}: Compilation du projet avec Maven
+  \item \textbf{Test}: Exécution des tests unitaires
+  \item \textbf{Analyse du code}: Vérification de la qualité du code avec Checkstyle, SpotBugs et PMD
+  \item \textbf{JavaDoc}: Génération de la documentation
+  \item \textbf{Package}: Création du fichier JAR
+  \item \textbf{Deploy to Nexus}: Déploiement sur un référentiel Nexus
+  \item \textbf{Docker Preconditions}: Vérifications préalables au déploiement Docker
+  \item \textbf{Deploy to Docker}: Construction et déploiement d'une image Docker
+\end{enumerate}
+
+Le pipeline inclut également des notifications par email pour les builds réussis, échoués ou instables, permettant à l'équipe d'être rapidement informée de l'état du projet.
+
+Cette configuration assure une intégration continue efficace, avec une détection précoce des problèmes et une automatisation du déploiement, contribuant ainsi à maintenir une qualité de code élevée tout au long du cycle de développement.
+
+\begin{center}
+\begin{minipage}{\textwidth}
+  \begin{tcolorbox}[enhanced, colback=lightgray, colframe=accentblue, arc=5pt, boxrule=0.5pt, drop shadow]
+    \centering
+    \includegraphics[width=0.8\textwidth]{jenkins_pipeline.png}
+    \captionof{figure}{Pipeline Jenkins}
+    \label{fig:jenkins-pipeline}
+    \vspace{0.5cm}
+    \parbox{0.9\textwidth}{\centering Visualisation du pipeline d'intégration continue dans Jenkins.}
+  \end{tcolorbox}
+\end{minipage}
+\end{center} 
